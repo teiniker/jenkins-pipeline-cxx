@@ -1,29 +1,60 @@
 # jenkins-pipeline-cxx
 
 
-## Build a Docker Image
+## Docker Agent
 
-We can build an image from the `Dockerfile` that can be run as a container 
-just like an image pulled from Docker Hub.
+```yml
+# Use Alpine as the base image
+FROM alpine:latest
 
-```bash
-# Build the Docker image with the tag "hello-cmake"
-$ docker build -t file_service .
+# Install required packages: g++, make, cmake, and build tools
+RUN apk add --no-cache git g++ make cmake
 
-# List local images to confirm the image was created
-$ docker image ls
+# Install Google Test framework
+RUN git clone -q https://github.com/google/googletest.git /googletest \
+  && mkdir -p /googletest/build \
+  && cd /googletest/build \
+  && cmake .. && make && make install \
+  && cd / && rm -rf /googletest
 
-# Show the layers and build steps of the hello-cmake image
-$ docker image history file_service
+# Set the working directory
+WORKDIR /app
 ```
 
-### Create Docker Container
 
-```bash
-# Run the image (container removed after exit with --rm)
-$ docker run --rm file_service
+## Jenkins Pipeline
 
-# remove the local Docker image
-$ docker image rm file_service
+```yml
+pipeline 
+{
+    agent { dockerfile true }
+    
+    stages 
+    {
+        stage('build') 
+        {
+            steps 
+            {
+                echo 'Build stage: compile all code and build an executable' 
+                dir('file_service') 
+                {
+                    sh 'mkdir -p build && cd build && cmake .. && make'
+                }
+            }
+        }
+        stage('test') 
+        {
+            steps 
+            {
+                echo 'Test stage: run the test cases' 
+                dir('file_service/build') 
+                {
+               	    sh './test/test'
+                }
+            }
+        }
+    }
+}
 ```
 
+_Egon Teiniker, 2025, GPL v3.0_

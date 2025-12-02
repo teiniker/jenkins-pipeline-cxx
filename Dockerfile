@@ -12,7 +12,7 @@ RUN git clone -q https://github.com/google/googletest.git /googletest \
   && cd / && rm -rf /googletest
 
 # Set the working directory
-#WORKDIR /app
+WORKDIR /app
 
 # Copy project files into the container
 #COPY ./file_service/ .
