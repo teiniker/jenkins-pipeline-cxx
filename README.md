@@ -37,7 +37,7 @@ pipeline
                 echo 'Test stage: run the test cases' 
                 dir('file_service/build') 
                 {
-               	    sh './test/test'
+                    sh './test/test'
                 }
             }
         }
