@@ -9,8 +9,10 @@ pipeline
             steps 
             {
                 echo 'Build stage: compile all code and build an executable' 
-                sh 'cd file_service'
-                sh 'mkdir -p build && cd build && cmake .. && make'
+                dir('file_service') 
+                {
+                    sh 'mkdir -p build && cd build && cmake .. && make'
+                }
             }
         }
         stage('test') 
@@ -18,8 +20,10 @@ pipeline
             steps 
             {
                 echo 'Test stage: run the test cases' 
-                sh 'cd file_service'
-               	sh 'build/test/test'
+                dir('file_service/build') 
+                {
+               	    sh './test/test'
+                }
             }
         }
     }
