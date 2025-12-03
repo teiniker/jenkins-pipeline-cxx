@@ -27,4 +27,16 @@ pipeline
             }
         }
     }
+    post 
+    {
+        success 
+        {
+            echo 'Copy build artifacts'
+            sh '''
+                mkdir -p artifacts
+                cp file_service/build/test/test artifacts/ 2>/dev/null || true
+            '''
+            archiveArtifacts artifacts: 'artifacts/*', fingerprint: true
+        }
+    }
 }
