@@ -42,6 +42,13 @@ pipeline
             }
         }
     }
+    post 
+    {
+        success 
+        {
+            archiveArtifacts artifacts: 'build/stack_test', fingerprint: true
+        }
+    }
 }
 ```
 
