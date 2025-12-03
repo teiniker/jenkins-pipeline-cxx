@@ -42,6 +42,18 @@ pipeline
             }
         }
     }
+    post 
+    {
+        success 
+        {
+            echo 'Archive build artifacts'
+            sh '''
+                mkdir -p artifacts
+                cp file_service/build/test/test artifacts/ 
+            '''
+            archiveArtifacts artifacts: 'artifacts/*', fingerprint: true
+        }
+    }    
 }
 ```
 
