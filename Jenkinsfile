@@ -27,11 +27,4 @@ pipeline
             }
         }
     }
-    post 
-    {
-        success 
-        {
-            archiveArtifacts artifacts: 'build/test/test', fingerprint: true
-        }
-    }
 }
