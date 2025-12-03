@@ -31,10 +31,10 @@ pipeline
     {
         success 
         {
-            echo 'Copy build artifacts'
+            echo 'Archive build artifacts'
             sh '''
                 mkdir -p artifacts
-                cp file_service/build/test/test artifacts/ 2>/dev/null || true
+                cp file_service/build/test/test artifacts/ 
             '''
             archiveArtifacts artifacts: 'artifacts/*', fingerprint: true
         }
