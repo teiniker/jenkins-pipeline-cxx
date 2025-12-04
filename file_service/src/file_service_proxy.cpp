@@ -21,7 +21,7 @@ string FileServiceProxy::readFile(const string& filename)
 	string content = service_->readFile(filename);
 	
 	// Post-Processing
-	return content;	
+	return content	
 }
 
 
