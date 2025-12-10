@@ -8,7 +8,7 @@ pipeline
         {
             steps 
             {
-                echo 'Running on Linux VM agent'
+                echo 'Running on Raspi 5 agent'
                 sh 'hostname && pwd && ls'
             }
         }
@@ -16,7 +16,7 @@ pipeline
         {
             steps 
             {
-                echo 'Build stage: compile all code and build an executable (native in the Linux VM)' 
+                echo 'Build stage: compile all code and build an executable (native in the Raspi 5)' 
                 dir('file_service') 
                 {
                     sh 'mkdir -p build && cd build && cmake .. && make'
@@ -27,7 +27,7 @@ pipeline
         {
             steps 
             {
-                echo 'Test stage: run the test cases (native in the Linux VM)' 
+                echo 'Test stage: run the test cases (native in the Raspi 5)' 
                 dir('file_service/build') 
                 {
                	    sh './test/test'
