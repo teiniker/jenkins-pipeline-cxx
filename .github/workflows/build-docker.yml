@@ -1,0 +1,61 @@
+# GitHub Actions equivalent of Jenkinsfile-agent-docker:
+# build the toolchain image from ./Dockerfile, then compile and test
+# file_service inside it and archive the test executable on success.
+name: build-docker
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  IMAGE: file-service-build:ci
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Equivalent of "agent { dockerfile true }". The image is built on the
+      # runner and cached between runs, so googletest isn't recompiled every time.
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build toolchain image from Dockerfile
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          load: true
+          tags: ${{ env.IMAGE }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # The image is Alpine (musl), so the JavaScript actions (checkout,
+      # upload-artifact) can't run inside it as a job container. Instead,
+      # each stage runs in the image with the workspace mounted, like Jenkins does.
+      - name: Build stage
+        run: |
+          echo 'Build stage: compile all code and build an executable'
+          docker run --rm -v "$GITHUB_WORKSPACE:/app" -w /app/file_service "$IMAGE" \
+            sh -c 'mkdir -p build && cd build && cmake .. && make'
+
+      - name: Test stage
+        run: |
+          echo 'Test stage: run the test cases'
+          # Run from file_service/build: the tests open ../test/test.data
+          docker run --rm -v "$GITHUB_WORKSPACE:/app" -w /app/file_service/build "$IMAGE" \
+            ./test/test
+
+      # Equivalent of post { success { archiveArtifacts ... } }
+      - name: Archive build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: file-service-test
+          path: file_service/build/test/test
