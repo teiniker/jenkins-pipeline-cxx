@@ -63,7 +63,7 @@ We need the following settings for a new Jenkins job:
 	- Pipeline
     - Description (optional)
     - Build Triggers 
-	    - Poll SCM: `H/1 * * * *`
+	    - Poll SCM: `H/2 * * * *`
     - Pipeline / Definition: 
       - Pipeline Script from SCM: 
         - SCM: Git 
@@ -177,30 +177,7 @@ Further examples:
 | `H 8-18/2 * * 1-5`  | every 2 hours between 08:00 and 18:00, Mon - Fri  |
 | `@daily`, `@hourly` | Aliases (Jenkins applies `H` automatically)       |
 
-
-## Docker Agent
-
-The agent is described by the following Dockerfile:
-
-```yml
-# Use Alpine as the base image
-FROM alpine:latest
-
-# Install required packages: g++, make, cmake, and build tools
-RUN apk add --no-cache git g++ make cmake
-
-# Install Google Test framework
-RUN git clone -q https://github.com/google/googletest.git /googletest \
-  && mkdir -p /googletest/build \
-  && cd /googletest/build \
-  && cmake .. && make && make install \
-  && cd / && rm -rf /googletest
-
-# Set the working directory
-WORKDIR /app
-```
-
-In addition to the build tools, the GoogleTest framework is also installed.
+_Egon Teiniker, 2025-2026, GPL v3.0_    
 
 
 _Egon Teiniker, 2025, GPL v3.0_
