@@ -53,6 +53,7 @@ pipeline
 }
 ```
 
+
 ## Jenkins Job Configuration
 
 We need the following settings for a new Jenkins job:
