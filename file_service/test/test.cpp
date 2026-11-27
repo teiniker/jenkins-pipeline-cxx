@@ -33,10 +33,10 @@ TEST_F(ProxyTest, FileServiceTest)
     EXPECT_EQ("123,0,4567,99,66,1,777777,888", data);
 }
 
-/*
+
 TEST_F(ProxyTest, InvalidFileExtension) 
 {
     // Exercise + Verify
     EXPECT_THROW(service->readFile("data.txt"), invalid_argument);
 }
-*/
+
